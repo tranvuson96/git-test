@@ -72,6 +72,7 @@ class StaffList extends Component {
     }
 
     render(){
+        // tạo cột
         const staff=this.props.staffs.map((staff)=>{
             return (
                     <Col 
@@ -81,6 +82,7 @@ class StaffList extends Component {
                     >{staff.name}</Col>
             )
         });
+        // tạo nút
         const button=(
             <div>
                 <ButtonToolbar>
@@ -94,7 +96,7 @@ class StaffList extends Component {
                 </ButtonToolbar>
             </div>
         );
-        
+        //logic xử lý các nút columns khi state được update đồng thời render UI
         if(this.state.numberOfColumn!=null){
             if(this.state.numberOfColumn==1){
                 return (
