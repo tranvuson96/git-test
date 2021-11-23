@@ -7,7 +7,7 @@ import dateFormat from 'dateformat';
 
 function Detail(props){
 
-
+if (props.dish!=null){
         const authorsComments=props.dish.comments.map((userComment)=>{
             return (
                 <div key={userComment.id}>
@@ -37,6 +37,7 @@ function Detail(props){
             </Container>
         )
     
-
+    }
+    else {return(<div></div>)}
 }
 export default Detail;

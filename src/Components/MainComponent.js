@@ -1,7 +1,6 @@
 import React,{Component} from 'react';
 import Home from './HomeComponent';
 import Menu from './MenuComponent';
-import Detail from './DishDetailComponent';
 import Header from './HeaderComponent';
 import Footer from './FooterComponent';
 import { DISHES } from '../shared/dishes';
@@ -13,25 +12,15 @@ class Main extends Component {
 
     this.state={
       dishes:DISHES,
-      // selectedDish:null
+      selectedDish: null
     }
 
   }
 
-  //   onDishSelect(dishId) {
-  //   this.setState({ selectedDish: dishId});
-  //   }
-
-  //   renderDetail(id){
-  //       if(id!=null){
-  //           return (
-  //               <Detail 
-  //                   dish={this.state.dishes.filter((dish)=>dish.id===this.state.selectedDish)[0]}
-  //               />
-  //           )
-  //       }
-  //       else {return (<div></div>)}
-  //   }
+    resetState(dishId){
+      this.setState({selectedDish:dishId})
+    }
+    
     render(){
       const HomePage=()=>{
         return (
@@ -43,7 +32,7 @@ class Main extends Component {
           <Header />
             <Routes>
               <Route path="/home" element={<HomePage />} />
-              <Route exact path="/menu" element={<Menu dishes={this.state.dishes} />} />
+              <Route exact path="/menu" element={<Menu dishes={this.state.dishes}/>} />
               <Route path="/" element={<Navigate replace to="/home" />}/>
             </Routes>
           <Footer />
