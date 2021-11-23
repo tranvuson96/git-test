@@ -9,7 +9,7 @@ import { DISHES } from '../shared/dishes';
 import {COMMENTS} from '../shared/comments';
 import { LEADERS } from '../shared/leaders';
 import { PROMOTIONS} from '../shared/promotions';
-import {Routes,Route,Navigate} from 'react-router-dom';
+import {Routes,Route,Navigate, useParams} from 'react-router-dom';
 
 class Main extends Component {
   constructor(props){
@@ -34,12 +34,22 @@ class Main extends Component {
           />
         )
       }
+
+      const DishWithId =(props)=>{
+         let id=useParams();
+        return (
+          <Detail dish={props.dishes.filter((dish)=>dish.id===parseInt(id.dishId,10))[0]}
+                  comments={props.comments.filter((comment)=>comment.dishId===parseInt(id.dishId,10))}
+                  />
+        )
+      }
       return (
         <div className="App">
           <Header />
             <Routes>
               <Route path="/home" element={<HomePage />} />
               <Route exact path="/menu" element={<Menu dishes={this.state.dishes}/>} />
+              <Route path="/menu/:dishId" element={<DishWithId dishes={this.state.dishes} comments={this.state.comments}/>}/>
               <Route exact path="/contactus" element={<Contact/>} />
               <Route path="/" element={<Navigate replace to="/home" />}/>
             </Routes>
