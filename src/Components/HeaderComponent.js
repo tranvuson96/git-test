@@ -43,7 +43,7 @@ class Header extends Component{
                                 </NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")} to="/contacus" >
+                                <NavLink className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")} to="/contactus" >
                                     <span className="fa fa-address-card fa-lg"></span> Contact Us
                                 </NavLink>
                             </NavItem>
