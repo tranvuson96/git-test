@@ -32,3 +32,11 @@ address{
   background-color: #512DA8;
 }
 
+.ml-auto{
+  margin-left:auto;
+  justify-content: flex-start;
+}
+
+.mr-auto{
+  margin-right:auto;
+}
