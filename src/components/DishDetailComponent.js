@@ -76,8 +76,12 @@ class Details extends React.Component {
 	}
 	handleSubmit(values) {
 		this.toggleModal();
-		console.log(JSON.stringify(values));
-		alert(JSON.stringify(values));
+		this.props.addComment(
+			this.props.dish.id,
+			values.rating,
+			values.author,
+			values.comment,
+		);
 	}
 	render() {
 		if (this.props.dish != null) {
