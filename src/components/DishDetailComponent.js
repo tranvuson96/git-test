@@ -24,9 +24,7 @@ const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !val || val.length <= len;
 const minLength = (len) => (val) => val && val.length >= len;
 const isNumber = (val) => !isNaN(Number(val));
-const min = (min) => (val) => !val || val >= min;
-const max = (max) => (val) => val && val <= max;
-function RenderComments({ comments }) {
+function RenderComments({ comments, dishId, postComment }) {
 	if (comments != null) {
 		const comment = comments.map((comment) => {
 			return (
@@ -44,6 +42,7 @@ function RenderComments({ comments }) {
 				<CardTitle>Comments</CardTitle>
 				<p>Imagine all the eatables,living in conFusion</p>
 				{comment}
+				<CommentForm dishId={dishId} postComment={postComment} />
 			</Card>
 		);
 	} else {
@@ -54,7 +53,7 @@ function RenderComments({ comments }) {
 function RenderDish({ dish }) {
 	return (
 		<Card>
-			<CardImg top src={baseUrl + dish.image} alt={dish.name} />
+			<CardImg width='100%' src={baseUrl + dish.image} alt={dish.name} />
 			<CardBody>
 				<CardTitle>{dish.name}</CardTitle>
 				<CardText>{dish.description}</CardText>
@@ -63,7 +62,7 @@ function RenderDish({ dish }) {
 	);
 }
 
-class Details extends React.Component {
+class CommentForm extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -77,141 +76,149 @@ class Details extends React.Component {
 		this.setState({ isModalOpen: !this.state.isModalOpen });
 	}
 	handleSubmit(values) {
+		console.log(this.props.dishId);
 		this.toggleModal();
-		this.props.addComment(
-			this.props.dish.id,
-			values.rating,
-			values.author,
-			values.comment,
-		);
+		console.log(JSON.stringify(values));
+		console.log(values);
+		alert(JSON.stringify(values));
+		this.props.postComment(this.props.dishId, values);
 	}
 	render() {
-		if (this.props.isLoading) {
-			return (
-				<div className='container'>
-					<div className='row'>
-						<Loading />
+		return (
+			<div>
+				<Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+					<ModalHeader toggle={this.toggleModal}>Comment</ModalHeader>
+					<ModalBody>
+						<LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+							<Row className='form-group'>
+								<Label htmlFor='rate'>Rating</Label>
+								<Control.select
+									model='.rate'
+									id='rate'
+									name='rate'
+									validators={{
+										isNumber,
+									}}>
+									<option>Choose</option>
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+								</Control.select>
+								<Errors
+									model='.rate'
+									className='text-danger'
+									show='touched'
+									messages={{
+										isNumber: "Must be a number",
+									}}
+								/>
+							</Row>
+							<Row className='form-group'>
+								<Label htmlFor='author'>Your Name</Label>
+								<Control.text
+									model='.author'
+									id='author'
+									name='author'
+									validators={{
+										required,
+										minLength: minLength(3),
+										maxLength: maxLength(15),
+									}}
+								/>
+								<Errors
+									className='text-danger'
+									model='.author'
+									show='touched'
+									messages={{
+										required: "Required",
+										minLength: "Must be greater than 2 characters",
+										maxLength: "Must be 15 characters or less",
+									}}
+								/>
+							</Row>
+							<Row className='form-group'>
+								<Label htmlFor='comment'>Comment</Label>
+								<Control.textarea
+									model='.comment'
+									id='comment'
+									name='comment'
+									validators={{ maxLength: maxLength(300) }}
+								/>
+								<Errors
+									className='text-danger'
+									model='.comment'
+									show='touched'
+									messages={{
+										maxLength: "Must be 300 charaters or less",
+									}}
+								/>
+							</Row>
+							<Row className='form-group'>
+								<Button type='submit' value='submit' color='primary'>
+									Submit
+								</Button>
+							</Row>
+						</LocalForm>
+					</ModalBody>
+				</Modal>
+				<Button outline onClick={this.toggleModal}>
+					<span className='fa fa-edit fa-lg'></span> SubmitComment
+				</Button>
+			</div>
+		);
+	}
+}
+
+function Details(props) {
+	if (props.isLoading) {
+		return (
+			<div className='container'>
+				<div className='row'>
+					<Loading />
+				</div>
+			</div>
+		);
+	} else if (props.errMess) {
+		return (
+			<div className='container'>
+				<div className='row'>
+					<h4>{props.errMess}</h4>
+				</div>
+			</div>
+		);
+	} else if (props.dish != null) {
+		return (
+			<div className='container'>
+				<div className='row'>
+					<Breadcrumb>
+						<BreadcrumbItem>
+							<Link to='/menu'>Menu</Link>
+						</BreadcrumbItem>
+						<BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+					</Breadcrumb>
+					<div className='col-12'>
+						<h3>{props.dish.name}</h3>
+						<hr />
 					</div>
 				</div>
-			);
-		} else if (this.props.errMess) {
-			return (
-				<div className='container'>
-					<div className='row'>
-						<h4>{this.props.errMess}</h4>
+				<div className='row'>
+					<div className='col-12 col-md-5 m-1'>
+						<RenderDish dish={props.dish} />
+					</div>
+					<div className='col-12 col-md-5 m-1'>
+						<RenderComments
+							comments={props.comments}
+							dishId={props.dish.id}
+							postComment={props.postComment}
+						/>
 					</div>
 				</div>
-			);
-		} else if (this.props.dish != null) {
-			return (
-				<div className='container'>
-					<div className='row'>
-						<Breadcrumb>
-							<BreadcrumbItem>
-								<Link to='/menu'>Menu</Link>
-							</BreadcrumbItem>
-							<BreadcrumbItem active>{this.props.dish.name}</BreadcrumbItem>
-						</Breadcrumb>
-						<div className='col-12'>
-							<h3>{this.props.dish.name}</h3>
-							<hr />
-						</div>
-					</div>
-					<div className='row'>
-						<div className='col-12 col-md-5 m-1'>
-							<RenderDish dish={this.props.dish} />
-						</div>
-						<div className='col-12 col-md-5 m-1'>
-							<RenderComments comments={this.props.comments} />
-							<Button outline onClick={this.toggleModal}>
-								<span className='fa fa-edit fa-lg'></span> SubmitComment
-							</Button>
-						</div>
-					</div>
-					<div>
-						<Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-							<ModalHeader toggle={this.toggleModal}>Comment</ModalHeader>
-							<ModalBody>
-								<LocalForm onSubmit={(values) => this.handleSubmit(values)}>
-									<Row className='form-group'>
-										<Label htmlFor='rate'>Rating</Label>
-										<Control.text
-											model='.rate'
-											id='rate'
-											name='rate'
-											validators={{
-												required,
-												isNumber,
-												min: min(0),
-												max: max(5),
-											}}
-										/>
-										<Errors
-											model='.rate'
-											className='text-danger'
-											show='touched'
-											messages={{
-												required: "Required",
-												isNumber: "Must be a number",
-												min: ">=0",
-												max: "<=5",
-											}}
-										/>
-									</Row>
-									<Row className='form-group'>
-										<Label htmlFor='author'>Your Name</Label>
-										<Control.text
-											model='.author'
-											id='author'
-											name='author'
-											validators={{
-												required,
-												minLength: minLength(3),
-												maxLength: maxLength(15),
-											}}
-										/>
-										<Errors
-											className='text-danger'
-											model='.author'
-											show='touched'
-											messages={{
-												required: "Required",
-												minLength: "Must be greater than 2 characters",
-												maxLength: "Must be 15 characters or less",
-											}}
-										/>
-									</Row>
-									<Row className='form-group'>
-										<Label htmlFor='comment'>Comment</Label>
-										<Control.textarea
-											model='.comment'
-											id='comment'
-											name='comment'
-											validators={{ maxLength: maxLength(300) }}
-										/>
-										<Errors
-											className='text-danger'
-											model='.comment'
-											show='touched'
-											messages={{
-												maxLength: "Must be 300 charaters or less",
-											}}
-										/>
-									</Row>
-									<Row className='form-group'>
-										<Button type='submit' value='submit' color='primary'>
-											Submit
-										</Button>
-									</Row>
-								</LocalForm>
-							</ModalBody>
-						</Modal>
-					</div>
-				</div>
-			);
-		} else {
-			return <div></div>;
-		}
+			</div>
+		);
+	} else {
+		return <div></div>;
 	}
 }
 
