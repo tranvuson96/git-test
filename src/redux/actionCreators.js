@@ -1,9 +1,9 @@
 import * as ActionTypes from "./actionTypes";
 import { baseUrl } from "../shared/baseUrl";
 
-export const addComment = (comment) => ({
+export const addComment = (comment, newComment) => ({
 	type: ActionTypes.ADD_COMMENT,
-	payload: comment,
+	payload: newComment,
 });
 
 export const postComment = (dishId, rating, author, comment) => (dispatch) => {
@@ -33,7 +33,7 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
 			}
 		})
 		.then((response) => response.json())
-		.then((response) => dispatch(addComment(response)))
+		.then((response) => dispatch(addComment(response, newComment)))
 		.catch((error) => {
 			console.log("post comments", error.message);
 			alert("Your comment could not be posted\nError: " + error.message);

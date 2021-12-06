@@ -81,7 +81,12 @@ class CommentForm extends React.Component {
 		console.log(JSON.stringify(values));
 		console.log(values);
 		alert(JSON.stringify(values));
-		this.props.postComment(this.props.dishId, values);
+		this.props.postComment(
+			this.props.dishId,
+			values.rating,
+			values.author,
+			values.comment,
+		);
 	}
 	render() {
 		return (
@@ -107,7 +112,7 @@ class CommentForm extends React.Component {
 									<option>5</option>
 								</Control.select>
 								<Errors
-									model='.rate'
+									model='.rating'
 									className='text-danger'
 									show='touched'
 									messages={{
