@@ -26,8 +26,8 @@ const mapPropsToState = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-	postComment: (dishId, rating, author, comment) =>
-		dispatch(postComment(dishId, rating, author, comment)),
+	postComment: (dishId, rate, author, comment) =>
+		dispatch(postComment(dishId, rate, author, comment)),
 	fetchDishes: () => {
 		dispatch(fetchDishes());
 	},

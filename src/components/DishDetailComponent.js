@@ -76,14 +76,10 @@ class CommentForm extends React.Component {
 		this.setState({ isModalOpen: !this.state.isModalOpen });
 	}
 	handleSubmit(values) {
-		console.log(this.props.dishId);
 		this.toggleModal();
-		console.log(JSON.stringify(values));
-		console.log(values);
-		alert(JSON.stringify(values));
 		this.props.postComment(
 			this.props.dishId,
-			values.rating,
+			values.rate,
 			values.author,
 			values.comment,
 		);
