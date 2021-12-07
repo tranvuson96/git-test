@@ -16,7 +16,7 @@ export const postComment = (dishId, rate, author, comment) => (dispatch) => {
 	return fetch(baseUrl + "comments", {
 		method: "POST",
 		body: JSON.stringify(newComment),
-		header: { "Content-Type": "application/json" },
+		headers: { "Content-Type": "application/json" },
 		credentials: "same-origin",
 	})
 		.then((response) => {
@@ -34,7 +34,7 @@ export const postComment = (dishId, rate, author, comment) => (dispatch) => {
 		.then((response) => {
 			console.log("newComment: ", newComment);
 			console.log("data: ", response);
-			dispatch(addComment(newComment));
+			dispatch(addComment(response));
 		})
 		.catch((error) => {
 			console.log("post comments", error.message);
