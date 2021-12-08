@@ -9,6 +9,7 @@ import StaffDetail from "./stafflist/StaffDetail";
 import Departments from "./departments/Departments";
 import Members from "./departments/Members";
 import Salary from "./stafflist/salary";
+import SearchAndAdd from "./SearchAndAdd/SearchAndAdd";
 
 class MainComponent extends Component {
 	constructor(props) {
@@ -43,7 +44,8 @@ class MainComponent extends Component {
 		};
 		return (
 			<div>
-				<Header staffs={this.state.staffs} />
+				<Header />
+				<SearchAndAdd staffs={this.state.staffs} />
 				<Switch>
 					<Route
 						path='/home'

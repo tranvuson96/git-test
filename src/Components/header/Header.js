@@ -8,7 +8,6 @@ import {
 	NavItem,
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
-import SearchApp from "./SearchApp";
 
 class Header extends Component {
 	constructor(props) {
@@ -89,9 +88,7 @@ class Header extends Component {
 									<h1>Demo App</h1>
 								</NavLink>
 							</div>
-							<div className='col-12 col-sm-6'>
-								<SearchApp staffs={this.props.staffs} />
-							</div>
+							<div className='col-12 col-sm-6'></div>
 						</div>
 					</div>
 				</div>
