@@ -1,19 +1,11 @@
 import React from "react";
-import {
-	Button,
-	Form,
-	FormGroup,
-	Label,
-	Input,
-	FormFeedback,
-	Modal,
-	ModalBody,
-	ModalHeader,
-} from "reactstrap";
-import { Link } from "react-router-dom";
+import { Button, Label, Modal, ModalBody, ModalHeader } from "reactstrap";
+import { LocalForm, Errors, Control } from "react-redux-form";
 import dateFormat from "dateformat";
-import { Errors } from "react-redux-form";
-import StaffList from "../stafflist/StaffList";
+
+const required = (val) => val && val.length;
+const maxLength = (len) => (val) => !val || val.length <= len;
+const minLength = (len) => (val) => val && val.length >= len;
 
 class AddApp extends React.Component {
 	constructor(props) {
@@ -21,76 +13,27 @@ class AddApp extends React.Component {
 
 		this.state = {
 			isModalOpen: false,
-			staff: {
-				id: 16,
-				name: "",
-				doB: dateFormat("", "dd/mm/yyyy"),
-				salaryScale: 1,
-				startDate: dateFormat("", "dd/mm/yyyy"),
-				department: "",
-				annualLeave: 0,
-				overTime: 0,
-				salary: 0,
-				image: "/assets/images/alberto.png",
-			},
-			touched: {
-				name: false,
-				doB: false,
-				startDate: false,
-			},
 		};
 		this.toggleModal = this.toggleModal.bind(this);
-		this.handleInputChange = this.handleInputChange.bind(this);
-		this.handleBlur = this.handleBlur.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
-	handleBlur = (field) => (evt) => {
-		this.setState({
-			touched: { ...this.state.touched, [field]: true },
-		});
-	};
 	toggleModal() {
 		this.setState({ isModalOpen: !this.state.isModalOpen });
 	}
-	validate(name, doB, startDate) {
-		const errors = {
-			name: "",
-			doB: "",
-			startDate: "",
-		};
-		if (this.state.touched.name && (name.length < 3 || name === null))
-			errors.name = "tên phải có ít nhất 3 ký tự";
-		else if (this.state.touched.name && name.length > 30)
-			errors.name = "số lượng ký tự không được quá 30";
 
-		if (this.state.touched.doB && (doB === null || doB === "dd/mm/yyyy"))
-			errors.doB = "Yêu cầu nhập";
-
-		if (
-			this.state.touched.startDate &&
-			(startDate === null || startDate === "dd/mm/yyyy")
-		)
-			errors.startDate = "Yêu cầu nhập";
-
-		return errors;
-	}
-	handleInputChange(e) {
-		const value = e.target.value;
-		const name = e.target.name;
-		this.setState({ staff: { ...this.state.staff, [name]: value } });
-	}
-	handleSubmit(e) {
-		let id = this.state.staff.id;
-		this.setState({ staff: { ...this.state.staff, id: id + 1 } });
-		console.log(this.state.staff);
-		e.preventDefault();
+	handleSubmit(values) {
+		this.toggleModal();
+		this.props.addStaff(
+			values.name,
+			values.doB,
+			values.startDate,
+			values.department,
+			values.salaryScale,
+			values.annualLeave,
+			values.overTime,
+		);
 	}
 	render() {
-		const errors = this.validate(
-			this.state.staff.name,
-			this.state.staff.doB,
-			this.state.staff.startDate,
-		);
 		return (
 			<React.Fragment>
 				<div>
@@ -101,92 +44,109 @@ class AddApp extends React.Component {
 				<Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
 					<ModalHeader toggle={this.toggleModal}>Điền thông tin</ModalHeader>
 					<ModalBody>
-						<Form onSubmit={this.handleSubmit}>
-							<FormGroup>
+						<LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+							<div>
 								<Label htmlFor='name'>Họ và tên</Label>
-								<Input
+								<Control
 									type='text'
+									model='.name'
 									id='name'
 									name='name'
-									value={this.state.staff.name}
-									onBlur={this.handleBlur("name")}
-									onChange={this.handleInputChange}
+									validators={{
+										required,
+										min: minLength(2),
+										max: maxLength(30),
+									}}
 								/>
-								<FormFeedback>{errors.name}</FormFeedback>
-							</FormGroup>
-							<FormGroup>
+								<Errors
+									model='.name'
+									className='text-danger'
+									show='touched'
+									messages={{
+										required: "Bạn phải điền tên",
+										min: "Phải có ít nhất 2 ký tự",
+										max: "Không được quá 30 ký tự",
+									}}
+								/>
+							</div>
+							<div>
 								<Label htmlFor='doB'>Ngày sinh</Label>
-								<Input
+								<Control
+									model='.doB'
 									type='date'
 									id='doB'
 									name='doB'
 									placeholder='dd/mm/yyyy'
-									onBlur={this.handleBlur("doB")}
-									onChange={this.handleInputChange}
+									validators={{
+										required,
+									}}
 								/>
-								<FormFeedback>{errors.doB}</FormFeedback>
-							</FormGroup>
-							<FormGroup>
+								<Errors
+									model='.doB'
+									className='text-danger'
+									show='touched'
+									messages={{ required: "Không được bỏ trống" }}
+								/>
+							</div>
+							<div>
 								<Label htmlFor='startDate'>Ngày vào công ty</Label>
-								<Input
+								<Control
 									type='date'
 									id='startDate'
 									name='startDate'
 									placeholder='dd/mm/yyyy'
-									onBlur={this.handleBlur("startDate")}
-									onChange={this.handleInputChange}
+									validators={{
+										required,
+									}}
 								/>
-								<FormFeedback>{errors.startDate}</FormFeedback>
-							</FormGroup>
-							<FormGroup>
+								<Errors
+									model='.startDate'
+									className='text-danger'
+									show='touched'
+									messages={{ required: "Không được bỏ trống" }}
+								/>
+							</div>
+							<div>
 								<Label htmlFor='department'>Phòng Ban</Label>
-								<Input
-									type='select'
-									id='department'
-									name='department'
-									value={this.state.staff.department}
-									onChange={this.handleInputChange}>
+								<Control.select type='select' id='department' name='department'>
 									<option>Sale</option>
 									<option>IT</option>
 									<option>HR</option>
 									<option>Marketing</option>
 									<option>Finance</option>
-								</Input>
-							</FormGroup>
-							<FormGroup>
+								</Control.select>
+							</div>
+							<div>
 								<Label htmlFor='salaryScale'>Hệ số lương</Label>
-								<Input
+								<Control.text
+									model='.salaryScale'
 									type='number'
 									id='salaryScale'
 									name='salaryScale'
-									value={this.state.staff.salaryScale}
-									onChange={this.handleInputChange}
 								/>
-							</FormGroup>
-							<FormGroup>
+							</div>
+							<div>
 								<Label htmlFor='annualLeave'>Số ngày nghỉ còn</Label>
-								<Input
+								<Control.text
+									model='.annualLeave'
 									type='number'
 									id='annualLeave'
 									name='annualLeave'
-									value={this.state.staff.annualLeave}
-									onChange={this.handleInputChange}
 								/>
-							</FormGroup>
-							<FormGroup>
+							</div>
+							<div>
 								<Label htmlFor='overTime'>Số ngày đã làm thêm</Label>
-								<Input
+								<Control.text
 									type='number'
 									id='overTime'
 									name='overTime'
-									value={this.state.staff.overTime}
-									onChange={this.handleInputChange}
+									model='.overTime'
 								/>
-							</FormGroup>
+							</div>
 							<Button type='submit' value='submit' color='primary'>
 								Xác Nhận
 							</Button>
-						</Form>
+						</LocalForm>
 					</ModalBody>
 				</Modal>
 			</React.Fragment>

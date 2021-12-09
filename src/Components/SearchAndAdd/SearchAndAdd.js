@@ -13,7 +13,7 @@ class SearchAndAdd extends Component {
 		return (
 			<div className='container'>
 				<div className='row d-inline-flex justify-content-around'>
-					<AddApp staffs={this.props.staffs} />
+					<AddApp staffs={this.props.staffs} addStaff={this.props.addStaff} />
 					<SearchApp staffs={this.props.staffs} />
 				</div>
 			</div>

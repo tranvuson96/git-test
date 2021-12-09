@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { STAFFS, DEPARTMENTS, ROLE } from "../shared/staffs";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Header from "./header/Header";
 import Footer from "./footer/FooterComponent";
 import HomePage from "./HomePage/HomePage";
@@ -10,23 +9,55 @@ import Departments from "./departments/Departments";
 import Members from "./departments/Members";
 import Salary from "./stafflist/salary";
 import SearchAndAdd from "./SearchAndAdd/SearchAndAdd";
+import { connect } from "react-redux";
+import { addStaff } from "../redux/ActionCreators";
+
+const mapPropsToState = (state) => {
+	return {
+		staffs: state.staffs,
+		departments: state.departments,
+		role: state.role,
+	};
+};
+const mapDispatchToProps = (dispatch) => ({
+	addStaff: (
+		name,
+		doB,
+		salaryScale,
+		startDate,
+		department,
+		annualLeave,
+		overTime,
+		salary,
+		image,
+	) =>
+		dispatch(
+			addStaff(
+				name,
+				doB,
+				salaryScale,
+				startDate,
+				department,
+				annualLeave,
+				overTime,
+				salary,
+				image,
+			),
+		),
+});
 
 class MainComponent extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			staffs: STAFFS,
-			departments: DEPARTMENTS,
-			role: ROLE,
-		};
+		this.state = {};
 	}
 	render() {
 		const StaffWithId = ({ match }) => {
 			return (
 				<StaffDetail
 					staff={
-						this.state.staffs.filter(
+						this.props.staffs.filter(
 							(staff) => staff.id === parseInt(match.params.id),
 						)[0]
 					}
@@ -36,7 +67,7 @@ class MainComponent extends Component {
 		const DeptMembers = ({ match }) => {
 			return (
 				<Members
-					list={this.state.staffs.filter(
+					list={this.props.staffs.filter(
 						(staff) => staff.department.name === match.params.deptName,
 					)}
 				/>
@@ -45,27 +76,30 @@ class MainComponent extends Component {
 		return (
 			<div>
 				<Header />
-				<SearchAndAdd staffs={this.state.staffs} />
+				<SearchAndAdd
+					staffs={this.props.staffs}
+					addStaff={this.props.addStaff}
+				/>
 				<Switch>
 					<Route
 						path='/home'
-						component={() => <HomePage staffs={this.state.staffs} />}
+						component={() => <HomePage staffs={this.props.staffs} />}
 					/>
 					<Route
 						exact
 						path='/staffs'
-						component={() => <StaffList staffs={this.state.staffs} />}
+						component={() => <StaffList staffs={this.props.staffs} />}
 					/>
 					<Route path='/staffs/:id' component={StaffWithId} />
 					<Route
 						exact
 						path='/departments'
-						component={() => <Departments depts={this.state.departments} />}
+						component={() => <Departments depts={this.props.departments} />}
 					/>
 					<Route path='/departments/:deptName' component={DeptMembers} />
 					<Route
 						path='/salary'
-						component={() => <Salary staffs={this.state.staffs} />}
+						component={() => <Salary staffs={this.props.staffs} />}
 					/>
 					<Redirect to='/home' />
 				</Switch>
@@ -75,4 +109,6 @@ class MainComponent extends Component {
 	}
 }
 
-export default MainComponent;
+export default withRouter(
+	connect(mapPropsToState, mapDispatchToProps)(MainComponent),
+);
