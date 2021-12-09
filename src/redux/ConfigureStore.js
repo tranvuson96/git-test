@@ -1,7 +1,6 @@
 import { combineReducers, createStore } from "redux";
-import { Staffs } from "./staffs";
+import { Staffs, Departments } from "./staffs";
 import { Role } from "./role";
-import { Departments } from "./departments";
 
 export const ConfigureStore = () => {
 	const Reducer = combineReducers({

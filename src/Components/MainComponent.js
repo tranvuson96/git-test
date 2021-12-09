@@ -23,25 +23,21 @@ const mapDispatchToProps = (dispatch) => ({
 	addStaff: (
 		name,
 		doB,
-		salaryScale,
 		startDate,
+		salaryScale,
 		department,
 		annualLeave,
 		overTime,
-		salary,
-		image,
 	) =>
 		dispatch(
 			addStaff(
 				name,
 				doB,
-				salaryScale,
 				startDate,
+				salaryScale,
 				department,
 				annualLeave,
 				overTime,
-				salary,
-				image,
 			),
 		),
 });

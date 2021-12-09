@@ -7,21 +7,20 @@ import {
 	Breadcrumb,
 	BreadcrumbItem,
 } from "reactstrap";
-import dateFormat from "dateformat";
 import { Link } from "react-router-dom";
 
 const RenderDetail = (props) => {
-	console.log(props);
+	console.log(props.staff);
 	if (props != null) {
 		return (
 			<Card>
 				<CardBody>
-					<CardTitle>Họ và tên:{props.name}</CardTitle>
-					<p>Ngày vào công ty:{props.start}</p>
-					<p>Ngày sinh:{props.dob}</p>
-					<p>Phòng ban:{props.department.name}</p>
-					<p>Số ngày nghỉ còn lại:{props.annuaLLeave}</p>
-					<p>Số ngày đã làm thêm:{props.oveRTime}</p>
+					<CardTitle>Họ và tên:{props.staff.name}</CardTitle>
+					<p>Ngày vào công ty:{props.staff.startDate}</p>
+					<p>Ngày sinh:{props.staff.doB}</p>
+					<p>Phòng ban:{props.staff.department}</p>
+					<p>Số ngày nghỉ còn lại:{props.staff.annualLeave}</p>
+					<p>Số ngày đã làm thêm:{props.staff.overTime}</p>
 				</CardBody>
 			</Card>
 		);
@@ -46,14 +45,7 @@ function StaffDetail(props) {
 					<CardImg src={props.staff.image} alt={props.staff.name} />
 				</div>
 				<div className='col-12 col-md-8 col-lg-9'>
-					<RenderDetail
-						name={props.staff.name}
-						dob={dateFormat(props.staff.doB, "dd/mm/yyyy")}
-						start={dateFormat(props.staff.startDate, "dd/mm/yyyy")}
-						department={props.staff.department}
-						annuaLLeave={props.staff.annualLeave}
-						oveRTime={props.staff.overTime}
-					/>
+					<RenderDetail staff={props.staff} />
 				</div>
 			</div>
 		</div>

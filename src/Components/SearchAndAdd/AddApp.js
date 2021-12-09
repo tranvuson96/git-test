@@ -1,26 +1,31 @@
 import React from "react";
 import { Button, Label, Modal, ModalBody, ModalHeader } from "reactstrap";
 import { LocalForm, Errors, Control } from "react-redux-form";
-import dateFormat from "dateformat";
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !val || val.length <= len;
 const minLength = (len) => (val) => val && val.length >= len;
-
+const isNumber = (val) => !isNaN(Number(val));
 class AddApp extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			isModalOpen: false,
+			tenState: { doB: "", startDate: "" },
 		};
 		this.toggleModal = this.toggleModal.bind(this);
+		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 	toggleModal() {
 		this.setState({ isModalOpen: !this.state.isModalOpen });
 	}
-
+	handleInputChange(e) {
+		const value = e.target.value;
+		const name = e.target.name;
+		this.setState({ tenState: { ...this.state.tenState, [name]: value } });
+	}
 	handleSubmit(values) {
 		this.toggleModal();
 		this.props.addStaff(
@@ -32,6 +37,7 @@ class AddApp extends React.Component {
 			values.annualLeave,
 			values.overTime,
 		);
+		console.log("Object:", values);
 	}
 	render() {
 		return (
@@ -76,6 +82,8 @@ class AddApp extends React.Component {
 									type='date'
 									id='doB'
 									name='doB'
+									value={this.state.tenState.doB}
+									onChange={this.handleInputChange}
 									placeholder='dd/mm/yyyy'
 									validators={{
 										required,
@@ -91,10 +99,13 @@ class AddApp extends React.Component {
 							<div>
 								<Label htmlFor='startDate'>Ngày vào công ty</Label>
 								<Control
+									model='.startDate'
 									type='date'
 									id='startDate'
 									name='startDate'
+									value={this.state.tenState.startDate}
 									placeholder='dd/mm/yyyy'
+									onChange={this.handleInputChange}
 									validators={{
 										required,
 									}}
@@ -108,7 +119,11 @@ class AddApp extends React.Component {
 							</div>
 							<div>
 								<Label htmlFor='department'>Phòng Ban</Label>
-								<Control.select type='select' id='department' name='department'>
+								<Control.select
+									model='.department'
+									id='department'
+									name='department'>
+									<option>Chọn</option>
 									<option>Sale</option>
 									<option>IT</option>
 									<option>HR</option>
@@ -123,6 +138,21 @@ class AddApp extends React.Component {
 									type='number'
 									id='salaryScale'
 									name='salaryScale'
+									validators={{
+										required,
+										isNumber,
+										min: minLength(0),
+									}}
+								/>
+								<Errors
+									model='.salaryScale'
+									className='text-danger'
+									show='touched'
+									messages={{
+										required: "Không được bỏ trống",
+										isNumber: "phải là số",
+										min: "phải lớn hơn 0",
+									}}
 								/>
 							</div>
 							<div>
@@ -132,6 +162,21 @@ class AddApp extends React.Component {
 									type='number'
 									id='annualLeave'
 									name='annualLeave'
+									validators={{
+										required,
+										isNumber,
+										min: minLength(0),
+									}}
+								/>
+								<Errors
+									model='.annualLeave'
+									className='text-danger'
+									show='touched'
+									messages={{
+										required: "Không được bỏ trống",
+										isNumber: "phải là số",
+										min: "Lớn hơn hoặc băng 0",
+									}}
 								/>
 							</div>
 							<div>
@@ -141,6 +186,17 @@ class AddApp extends React.Component {
 									id='overTime'
 									name='overTime'
 									model='.overTime'
+									validators={{ required, isNumber, min: minLength(0) }}
+								/>
+								<Errors
+									model='.overTime'
+									className='text-danger'
+									show='touched'
+									messages={{
+										required: "Không được bỏ trống",
+										isNumber: "phải là số",
+										min: "Lớn hơn hoặc bằng 0",
+									}}
 								/>
 							</div>
 							<Button type='submit' value='submit' color='primary'>
