@@ -52,7 +52,7 @@ const RenderDetail = (props) => {
 };
 
 function StaffDetail(props) {
-	if (props.loading) {
+	if (props.loading && props.loadingD) {
 		return (
 			<div className='container'>
 				<div className='row'>
@@ -60,7 +60,7 @@ function StaffDetail(props) {
 				</div>
 			</div>
 		);
-	} else if (props.errMess) {
+	} else if (props.errMess && props.errMessD) {
 		return <h4>{props.errMess}</h4>;
 	} else {
 		const dept = props.depts.filter(

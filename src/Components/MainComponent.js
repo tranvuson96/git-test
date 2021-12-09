@@ -75,6 +75,8 @@ class MainComponent extends Component {
 					depts={this.props.departments.depts}
 					errMess={this.props.staffs.err}
 					loading={this.props.staffs.isLoading}
+					errMessD={this.props.departments.err}
+					loadingD={this.props.departments.isLoading}
 				/>
 			);
 		};
@@ -96,6 +98,8 @@ class MainComponent extends Component {
 				<SearchAndAdd
 					staffs={this.props.staffs.staffs}
 					addStaff={this.props.addStaff}
+					errMess={this.props.staffs.err}
+					loading={this.props.staffs.isLoading}
 				/>
 				<TransitionGroup>
 					<CSSTransition

@@ -10,9 +10,26 @@ import {
 	CardBody,
 	CardTitle,
 } from "reactstrap";
+import Loading from "../Loading";
 
-const SearchResult = ({ staffs }) => {
-	if (staffs != null) {
+const SearchResult = ({ staffs, err, isLoading }) => {
+	if (isLoading) {
+		return (
+			<div className='container'>
+				<div className='row'>
+					<Loading />
+				</div>
+			</div>
+		);
+	} else if (err) {
+		return (
+			<div className='container'>
+				<div className='row'>
+					<h4>{err}</h4>
+				</div>
+			</div>
+		);
+	} else if (staffs != null) {
 		return staffs.map((staff) => {
 			return (
 				<Card className='col-12 col-md-6 col-lg-3' key={staff.id}>
@@ -78,7 +95,11 @@ class SearchApp extends React.Component {
 				</div>
 				<div className='container'>
 					<div className='row'>
-						<SearchResult staffs={this.state.result} />
+						<SearchResult
+							staffs={this.state.result}
+							err={this.props.err}
+							isLoading={this.props.isLoading}
+						/>
 					</div>
 				</div>
 			</React.Fragment>
