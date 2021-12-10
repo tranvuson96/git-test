@@ -1,6 +1,4 @@
-import { STAFFS } from "../shared/staffs";
 import * as ActionTypes from "./ActionTypes";
-import { DEPARTMENTS } from "../shared/staffs";
 
 export const Departments = (
 	state = { isLoading: true, err: null, depts: [] },
@@ -35,11 +33,17 @@ export const Staffs = (
 			return { ...state, isLoading: false, err: action.payload, staffs: [] };
 		case ActionTypes.ADD_STAFF:
 			var staff = action.payload;
-			staff.id = state.staffs.length;
-			staff.image = "/assets/images/alberto.png";
-			console.log(staff);
-			console.log(state.staffs.concat(staff));
 			return { ...state, staffs: state.staffs.concat(staff) };
+		case ActionTypes.DELETE_STAFF:
+			return {
+				...state,
+				staffs: state.staffs.filter((staff) => staff.id !== action.payload),
+			};
+		case ActionTypes.EDIT:
+			var newDetail = action.payload;
+			var index = state.staffs.indexOf(newDetail.id);
+			state.staffs[index] = newDetail;
+			return state;
 		default:
 			return state;
 	}

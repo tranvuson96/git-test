@@ -1,47 +1,7 @@
-import {
-	Card,
-	CardImg,
-	CardBody,
-	CardTitle,
-	Breadcrumb,
-	BreadcrumbItem,
-} from "reactstrap";
+import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { Link } from "react-router-dom";
 import React from "react";
-import Loading from "../Loading";
-function RenderList({ staffs, isLoading, err }) {
-	if (isLoading) {
-		return (
-			<div className='container'>
-				<div className='row'>
-					<Loading />
-				</div>
-			</div>
-		);
-	} else if (err) {
-		return (
-			<div className='container'>
-				<div className='row'>
-					<h4>{err}</h4>
-				</div>
-			</div>
-		);
-	} else
-		return staffs.map((staff) => {
-			return (
-				<div className='col-6 col-md-4 col-lg-2' key={staff.id}>
-					<Card>
-						<Link to={`/staffs/${staff.id}`}>
-							<CardImg src={staff.image} alt={staff.name} />
-							<CardBody>
-								<CardTitle>{staff.name}</CardTitle>
-							</CardBody>
-						</Link>
-					</Card>
-				</div>
-			);
-		});
-}
+import RenderList from "./RenderList";
 
 function StaffList(props) {
 	return (
@@ -56,6 +16,9 @@ function StaffList(props) {
 			</div>
 			<div className='row'>
 				<RenderList
+					depts={props.depts}
+					deleteStaff={props.deleteStaff}
+					patchEdit={props.patchEdit}
 					staffs={props.staffs}
 					err={props.errMess}
 					isLoading={props.loading}

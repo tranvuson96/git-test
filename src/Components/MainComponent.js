@@ -12,9 +12,11 @@ import SearchAndAdd from "./SearchAndAdd/SearchAndAdd";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { connect } from "react-redux";
 import {
-	addStaff,
 	fetchStaffs,
 	fetchDepartments,
+	postDetail,
+	patchEdit,
+	deleteStaff,
 } from "../redux/ActionCreators";
 
 const mapPropsToState = (state) => {
@@ -25,28 +27,54 @@ const mapPropsToState = (state) => {
 	};
 };
 const mapDispatchToProps = (dispatch) => ({
+	deleteStaff: (id) => {
+		dispatch(deleteStaff(id));
+	},
 	fetchStaffs: () => {
 		dispatch(fetchStaffs());
 	},
 	fetchDepartments: () => {
 		dispatch(fetchDepartments());
 	},
-	addStaff: (
+	patchEdit: (
+		id,
 		name,
 		doB,
 		startDate,
+		departmentId,
 		salaryScale,
-		department,
+		annualLeave,
+		overTime,
+	) => {
+		dispatch(
+			patchEdit(
+				id,
+				name,
+				doB,
+				startDate,
+				departmentId,
+				salaryScale,
+				annualLeave,
+				overTime,
+			),
+		);
+	},
+	postDetail: (
+		name,
+		doB,
+		startDate,
+		departmentId,
+		salaryScale,
 		annualLeave,
 		overTime,
 	) =>
 		dispatch(
-			addStaff(
+			postDetail(
 				name,
 				doB,
 				startDate,
+				departmentId,
 				salaryScale,
-				department,
 				annualLeave,
 				overTime,
 			),
@@ -96,8 +124,9 @@ class MainComponent extends Component {
 			<div>
 				<Header />
 				<SearchAndAdd
+					depts={this.props.departments.depts}
 					staffs={this.props.staffs.staffs}
-					addStaff={this.props.addStaff}
+					postDetail={this.props.postDetail}
 					errMess={this.props.staffs.err}
 					loading={this.props.staffs.isLoading}
 				/>
@@ -122,6 +151,9 @@ class MainComponent extends Component {
 								path='/staffs'
 								component={() => (
 									<StaffList
+										depts={this.props.departments.depts}
+										deleteStaff={this.props.deleteStaff}
+										patchEdit={this.props.patchEdit}
 										staffs={this.props.staffs.staffs}
 										errMess={this.props.staffs.err}
 										loading={this.props.staffs.isLoading}

@@ -1,27 +1,145 @@
 import * as ActionTypes from "./ActionTypes";
 import { baseUrl } from "../shared/baseUrl";
-
-export const addStaff = (
-	name,
-	doB,
-	startDate,
-	department,
-	salaryScale,
-	annualLeave,
-	overTime,
-) => ({
+// thêm thông tin nhân viên mới
+export const addStaff = (staff) => ({
 	type: ActionTypes.ADD_STAFF,
-	payload: {
-		name: name,
-		doB: doB,
-		startDate: startDate,
-		salaryScale: salaryScale,
-		department: department,
-		annualLeave: annualLeave,
-		overTime: overTime,
-	},
+	payload: staff,
 });
 
+export const postDetail =
+	(name, doB, startDate, departmentId, salaryScale, annualLeave, overTime) =>
+	(dispatch) => {
+		const newStaff = {
+			name: name,
+			doB: doB,
+			startDate: startDate,
+			departmentId: departmentId,
+			salaryScale: salaryScale,
+			annualLeave: annualLeave,
+			overTime: overTime,
+			image: "/asset/images/alberto.png",
+		};
+		return fetch(baseUrl + "staffs", {
+			method: "POST",
+			body: JSON.stringify(newStaff),
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "same-origin",
+		})
+			.then(
+				(response) => {
+					if (response.ok) {
+						return response.json();
+					} else {
+						var error = new Error(
+							"Error " + response.status + ": " + response.statusText,
+						);
+						error.response = response;
+						throw error;
+					}
+				},
+				(error) => {
+					var errmess = new Error(error.message);
+					throw errmess;
+				},
+			)
+			.then((response) => dispatch(addStaff(response)))
+			.catch((error) => {
+				console.log("Post: ", error.message);
+			});
+	};
+// xóa nhân viên
+export const deleteId = (id) => ({
+	type: ActionTypes.DELETE_STAFF,
+	id,
+});
+
+export const deleteStaff = (id) => async (dispatch) => {
+	console.log(id);
+	return await fetch(baseUrl + "staffs/" + id, {
+		method: "DELETE",
+	})
+		.then(
+			(response) => {
+				if (response.ok) {
+					return response.json();
+				} else {
+					var error = new Error(
+						"Error " + response.status + ": " + response.statusText,
+					);
+					error.response = response;
+					throw error;
+				}
+			},
+			(error) => {
+				var errmess = new Error(error.message);
+				throw errmess;
+			},
+		)
+		.then((response) => dispatch(deleteId(response)))
+		.catch((err) => alert("Could not remove the staff ", err.message));
+};
+
+// sửa đổi thông tin nhân viên
+export const editDetails = (staff) => ({
+	type: ActionTypes.EDIT,
+	payload: staff,
+});
+
+export const patchEdit =
+	(
+		id,
+		name,
+		doB,
+		startDate,
+		departmentId,
+		salaryScale,
+		annualLeave,
+		overTime,
+	) =>
+	async (dispatch) => {
+		const newDetails = {
+			id,
+			name: name,
+			doB: doB,
+			startDate: startDate,
+			departmentId: departmentId,
+			salaryScale: salaryScale,
+			annualLeave: annualLeave,
+			overTime: overTime,
+			image: "/asset/images/alberto.png",
+		};
+		return await fetch(baseUrl + "staffs", {
+			method: "PATCH",
+			body: JSON.stringify(newDetails),
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "same-origin",
+		})
+			.then(
+				(response) => {
+					if (response.ok) {
+						return response.json();
+					} else {
+						var error = new Error(
+							"Error " + response.status + ": " + response.statusText,
+						);
+						error.response = response;
+						throw error;
+					}
+				},
+				(error) => {
+					var errmess = new Error(error.message);
+					throw errmess;
+				},
+			)
+			.then((response) => dispatch(editDetails(response)))
+			.catch((err) => alert("Không thể chỉnh sửa ", err.message));
+	};
+
+// lấy dữ liệu từ server
 export const fetchStaffs = () => async (dispatch) => {
 	dispatch(loading(true));
 	return await fetch(baseUrl + "staffs")
@@ -93,6 +211,7 @@ export const addDepartments = (depts) => ({
 	payload: depts,
 });
 
+// thông báo đang load
 export const loading = () => ({
 	type: ActionTypes.LOADING,
 });

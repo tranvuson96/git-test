@@ -1,25 +1,26 @@
-import React from "react";
+import React, { Component } from "react";
 import { Button, Label, Modal, ModalBody, ModalHeader } from "reactstrap";
-import { LocalForm, Errors, Control } from "react-redux-form";
+import { Control, Errors, LocalForm } from "react-redux-form";
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !val || val.length <= len;
 const minLength = (len) => (val) => val && val.length >= len;
 const isNumber = (val) => !isNaN(Number(val));
-class AddApp extends React.Component {
+
+class EditFile extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			isModalOpen: false,
+			isEditModalOpen: false,
 			tenState: { doB: "", startDate: "" },
 		};
-		this.toggleModal = this.toggleModal.bind(this);
+		this.toggleEditModal = this.toggleEditModal.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
-	toggleModal() {
-		this.setState({ isModalOpen: !this.state.isModalOpen });
+	toggleEditModal() {
+		this.setState({ isEditModalOpen: !this.state.isEditModalOpen });
 	}
 	handleInputChange(e) {
 		const value = e.target.value;
@@ -27,14 +28,15 @@ class AddApp extends React.Component {
 		this.setState({ tenState: { ...this.state.tenState, [name]: value } });
 	}
 	handleSubmit(values) {
-		this.toggleModal();
-		console.log(this.props.depts.id);
+		this.toggleEditModal();
+		const id = this.props.staff.id;
 		let department = this.props.depts.filter(
 			(dept) => dept.name === values.department,
 		)[0];
 		const departmentId = department.id;
 		console.log(departmentId);
-		this.props.addStaff(
+		this.props.edit(
+			id,
 			values.name,
 			values.doB,
 			values.startDate,
@@ -43,18 +45,20 @@ class AddApp extends React.Component {
 			values.annualLeave,
 			values.overTime,
 		);
-		console.log("Object:", values);
+		alert("tải lại trang để thấy sự thay đổi");
 	}
 	render() {
 		return (
 			<React.Fragment>
-				<div>
-					<Button onClick={this.toggleModal}>
-						<span className='fa fa-solid fa-plus'></span>Thêm nhân sự
-					</Button>
-				</div>
-				<Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-					<ModalHeader toggle={this.toggleModal}>Điền thông tin</ModalHeader>
+				<Button onClick={this.toggleEditModal}>
+					<span className='fa fa-pencil'></span>
+				</Button>
+				<Modal
+					isOpen={this.state.isEditModalOpen}
+					toggle={this.toggleEditModal}>
+					<ModalHeader toggle={this.toggleEditModal}>
+						Điền thông tin
+					</ModalHeader>
 					<ModalBody>
 						<LocalForm onSubmit={(values) => this.handleSubmit(values)}>
 							<div>
@@ -216,4 +220,4 @@ class AddApp extends React.Component {
 	}
 }
 
-export default AddApp;
+export default EditFile;

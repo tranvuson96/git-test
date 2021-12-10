@@ -62,7 +62,11 @@ function StaffDetail(props) {
 		);
 	} else if (props.errMess && props.errMessD) {
 		return <h4>{props.errMess}</h4>;
-	} else {
+	} else if (
+		props.depts != null &&
+		props.staff != null &&
+		props.staff.departmentId != null
+	) {
 		const dept = props.depts.filter(
 			(dept) => dept.id === props.staff.departmentId,
 		)[0].name;
@@ -91,6 +95,8 @@ function StaffDetail(props) {
 				</div>
 			</div>
 		);
+	} else {
+		return <h4>this staff's detail has been deleted</h4>;
 	}
 }
 
