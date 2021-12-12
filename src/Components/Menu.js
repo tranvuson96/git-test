@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Card, CardImg, CardImgOverlay, CardTitle, CardText } from "reactstrap";
+import {
+	Card,
+	CardImg,
+	CardImgOverlay,
+	CardTitle,
+	CardText,
+	CardBody,
+} from "reactstrap";
 
 export class Menu extends Component {
 	constructor(props) {
