@@ -16,7 +16,7 @@ export class Menu extends Component {
 			selectedDish: null,
 		};
 	}
-	onDishSelec(dish) {
+	onDishSelect(dish) {
 		this.setState({ selectedDish: dish });
 	}
 	renderDish(dish) {
