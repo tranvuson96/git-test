@@ -19,29 +19,34 @@ import { Link } from "react-router-dom";
 import { Control, LocalForm, Errors } from "react-redux-form";
 import Loading from "./LoadingComponent";
 import { baseUrl } from "../shared/baseUrl";
+import { FadeTransform, Fade, Stagger } from "react-animation-components";
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !val || val.length <= len;
 const minLength = (len) => (val) => val && val.length >= len;
 const isNumber = (val) => !isNaN(Number(val));
+
 function RenderComments({ comments, dishId, postComment }) {
 	if (comments != null) {
-		const comment = comments.map((comment) => {
-			return (
-				<div key={comment.id}>
-					<p>
-						-- {comment.author}, {dateFormat(comment.date, "dd/mm/yyyy")}
-					</p>
-					<p>{comment.comment}</p>
-				</div>
-			);
-		});
-
 		return (
 			<Card>
 				<CardTitle>Comments</CardTitle>
 				<p>Imagine all the eatables,living in conFusion</p>
-				{comment}
+				<Stagger in>
+					{comments.map((comment) => {
+						return (
+							<Fade in>
+								<div key={comment.id}>
+									<p>
+										-- {comment.author},{" "}
+										{dateFormat(comment.date, "dd/mm/yyyy")}
+									</p>
+									<p>{comment.comment}</p>
+								</div>
+							</Fade>
+						);
+					})}
+				</Stagger>
 				<CommentForm dishId={dishId} postComment={postComment} />
 			</Card>
 		);
@@ -52,13 +57,17 @@ function RenderComments({ comments, dishId, postComment }) {
 
 function RenderDish({ dish }) {
 	return (
-		<Card>
-			<CardImg width='100%' src={baseUrl + dish.image} alt={dish.name} />
-			<CardBody>
-				<CardTitle>{dish.name}</CardTitle>
-				<CardText>{dish.description}</CardText>
-			</CardBody>
-		</Card>
+		<FadeTransform
+			in
+			transformProps={{ exitTransform: "scale(0.5) translateY(-50%)" }}>
+			<Card>
+				<CardImg width='100%' src={baseUrl + dish.image} alt={dish.name} />
+				<CardBody>
+					<CardTitle>{dish.name}</CardTitle>
+					<CardText>{dish.description}</CardText>
+				</CardBody>
+			</Card>
+		</FadeTransform>
 	);
 }
 
